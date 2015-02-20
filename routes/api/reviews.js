@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
+var accepts = require('accepts')
 var reviews = [{
     name: 'McDo',
     placeType: 'Fastfood',
@@ -22,18 +23,37 @@ var reviews = [{
 var Reviews = mongoose.model('Reviews');
 
 router.get('/', function(req, res, next) {
+    var accept = accepts(req)
     Reviews.find({}, function(err, reviews) {
         if (err) {
             res.status(500).send({
                 'error': err
             });
         } else {
-            res.send(reviews);
+            switch (accept.type(['json', 'html'])) {
+                case 'json':
+                    res.setHeader('Content-Type', 'application/json');
+                    res.status(200).send(reviews);
+                    break
+                case 'html':
+                    res.setHeader('Content-Type', 'text/html');
+                    res.render('reviews/index', {
+                        reviews: reviews
+                    });
+                    break
+                default:
+                    res.status(300).send({
+                        'message': 'header accept type html or json'
+                    });
+                    break
+            }
         }
     });
+
 });
 
 router.post('/', function(req, res, next) {
+    var accept = accepts(req)
     if ('undefined' == typeof req.body.name || 'undefined' == typeof req.body.placeType || 'undefined' == typeof req.body.stars) {
         res.status(400).send({
             error: 'Problème dans les paramètres'
@@ -57,9 +77,23 @@ router.post('/', function(req, res, next) {
                     'error': err
                 });
             } else {
-                res.status(201).send({
-                    'message': 'Création'
-                });
+                switch (accept.type(['json', 'html'])) {
+                    case 'json':
+                        res.setHeader('Content-Type', 'application/json');
+                        res.status(201).send({
+                            'message': 'Création'
+                        });
+                        break
+                    case 'html':
+                        res.setHeader('Content-Type', 'text/html');
+                        return res.redirect('/api/reviews');
+                        break
+                    default:
+                        res.status(300).send({
+                            'message': 'header accept type html or json'
+                        });
+                        break
+                }
             }
         });
 
@@ -82,6 +116,7 @@ router.delete('/', function(req, res, next) {
 });
 
 router.get('/:id', function(req, res, next) {
+    var accept = accepts(req)
     if ('undefined' == typeof req.params.id) {
         res.status(400).send({
             error: 'Problème dans les paramètres'
@@ -96,13 +131,30 @@ router.get('/:id', function(req, res, next) {
                     'error': err
                 });
             } else {
-                res.status(200).send(reviews);
+                switch (accept.type(['json', 'html'])) {
+                    case 'json':
+                        res.setHeader('Content-Type', 'application/json');
+                        res.status(200).send(reviews);
+                        break
+                    case 'html':
+                        res.setHeader('Content-Type', 'text/html');
+                        res.render('reviews/one', {
+                            reviews: reviews
+                        });
+                        break
+                    default:
+                        res.status(300).send({
+                            'message': 'header accept type html or json'
+                        });
+                        break
+                }
             }
         });
     }
 });
 
 router.put('/:id', function(req, res, next) {
+    var accept = accepts(req)
     if ('undefined' == typeof req.body.name || 'undefined' == typeof req.body.placeType || 'undefined' == typeof req.body.stars || 'undefined' == typeof req.params.id) {
         res.status(400).send({
             error: 'Problème dans les paramètres'
@@ -128,9 +180,24 @@ router.put('/:id', function(req, res, next) {
                     'error': err
                 });
             } else {
-                res.status(201).send({
-                    'message': 'Update'
-                });
+
+                switch (accept.type(['json', 'html'])) {
+                    case 'json':
+                        res.setHeader('Content-Type', 'application/json');
+                        res.status(201).send({
+                            'message': 'Update'
+                        });
+                        break
+                    case 'html':
+                        res.setHeader('Content-Type', 'text/html');
+                        return res.redirect('/api/reviews/' + req.params.id);
+                        break
+                    default:
+                        res.status(300).send({
+                            'message': 'header accept type html or json'
+                        });
+                        break
+                }
             }
         });
     }

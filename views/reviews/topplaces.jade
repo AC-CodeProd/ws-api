@@ -1,0 +1,23 @@
+extends ../layout
+
+block content
+    a(href='/api/reviews/') Tous les avis
+    .table-responsive
+                table.table.table-striped
+                  thead
+                    tr
+                      th Name
+                      th PlaceType
+                      th Stars
+                  tbody
+                    each review in reviews
+                        tr
+                          td=review.name
+                          td=review.placeType
+                          td
+                            - for (var i = 0; i < 5; ++i) {
+                                if (review.stars > i)
+                                    i.fa.fa-star.fa-2x
+                                else
+                                    i.fa.fa-star-o.fa-2x
+                            - }

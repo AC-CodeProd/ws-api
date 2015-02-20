@@ -1,0 +1,16 @@
+extends ../layout
+
+block content
+
+    //- form()
+
+    select(value="name", id="type",name="type")
+        option(value="name") name
+        option(value="placeType") placeType
+        option(value="stars") stars
+
+    input(type="text" id="search", placeholder="Search",name="search")
+    input(type="submit", value="Valider",id="valider")
+
+
+    a(href='/api/reviews/') Tous les avis
