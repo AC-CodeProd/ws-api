@@ -1,0 +1,45 @@
+extends ../layout
+
+block content
+    a(href='/reviews/topPlaces') Top places
+
+    a(href='/search') Search
+
+    .table-responsive
+                table.table.table-striped
+                  thead
+                    tr
+                      th Name
+                      th PlaceType
+                      th Stars
+                      th Action
+                  tbody
+                    each review in reviews
+                        tr
+                          td
+                            a(href='/api/reviews/#{review._id}')=review.name
+                          td=review.placeType
+                          td
+                            - for (var i = 0; i < 5; ++i) {
+                                if (review.stars > i)
+                                    i.fa.fa-star.fa-2x
+                                else
+                                    i.fa.fa-star-o.fa-2x
+                            - }
+                          td
+                            a.delete(href='javascript:void(0)',data-reviews-id=review._id.toString())
+                                i.fa.fa-trash.fa-2x
+
+    .add-review
+      form(action='/api/reviews', method='post')
+        label Name
+        input(placeholder="Name", id="name",name="name")
+
+        label Place type
+        input(placeholder="Type of place",id="placeType",name="placeType")
+
+        label Stars
+        input(min="0" max="5", placeholder="Number of stars",id="stars", type="number",name="stars")
+
+        input(type="submit", value="Ajouter")
+

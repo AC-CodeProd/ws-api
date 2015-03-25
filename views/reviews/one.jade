@@ -1,0 +1,31 @@
+extends ../layout
+
+block content
+    a(href='/api/reviews/#{reviews[0]._id}')
+        i.fa.fa-pencil-square-o.fa-2x
+
+    h1=reviews[0].name
+    p=reviews[0].placeType
+    p
+        - for (var i = 0; i < 5; ++i) {
+                if (reviews[0].stars > i)
+                    i.fa.fa-star.fa-2x
+                else
+                    i.fa.fa-star-o.fa-2x
+        - }
+
+    .add-review
+      form(action='/api/reviews/#{reviews[0]._id}?_method=PUT', method='post')
+
+        label Name
+        input(placeholder="Name", id="name",name="name",value="#{reviews[0].name}")
+
+        label Place type
+        input(placeholder="Type of place",id="placeType",name="placeType",value="#{reviews[0].placeType}")
+
+        label Stars
+        input(min="0" max="5", placeholder="Number of stars",id="stars", type="number",name="stars",value="#{reviews[0].stars}")
+
+        input(type="submit", value="Éditer")
+
+    a(href='/api/reviews/') Tous les avis
